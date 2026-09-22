@@ -72,7 +72,7 @@ function OrdersList({ passcode }: { passcode: string }) {
             <div
               key={o.orderNumber}
               className="p-4 bg-[#141414] border border-[#991B1B]/40 rounded-2xl flex flex-wrap items-center gap-4 cursor-pointer hover:border-red-500/60 transition-colors"
-              onClick={() => router.push(`/admin/send-payment-email/?id=${encodeURIComponent(o.orderNumber)}`)}
+              onClick={() => router.push(`/admin/orders/${encodeURIComponent(o.orderNumber)}`)}
             >
               <div className="flex-1 min-w-[200px]">
                 <div className="flex items-center gap-2">

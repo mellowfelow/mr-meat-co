@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAdminPasscode } from "@/lib/adminAuth";
 import { sendMail } from "@/lib/mailer";
-import { buildEmailHtml } from "@/lib/emailTemplate";
+import { buildEmailHtml, escapeHtml } from "@/lib/emailTemplate";
 import { paymentTermsHtml } from "@/lib/order";
 import { waPaymentConfirmationLink } from "@/lib/whatsapp";
 import { markOrderSent } from "@/lib/orderStore";
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         { label: "Amount Due", value: `$${Number(body.amountDue || 0).toFixed(2)} AUD`, highlight: true },
         ...(body.paymentMethod ? [{ label: "Payment Method", value: body.paymentMethod }] : []),
         { label: "How to Pay", heading: true },
-        { label: "", html: body.instructions.replace(/\n/g, "<br>"), block: true },
+        { label: "", html: escapeHtml(body.instructions).replace(/\n/g, "<br>"), block: true },
       ],
       afterRows: paymentTermsHtml({
         orderNumber: body.orderNumber,

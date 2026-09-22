@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAdminPasscode } from "@/lib/adminAuth";
 import { sendMail } from "@/lib/mailer";
-import { buildEmailHtml } from "@/lib/emailTemplate";
+import { buildEmailHtml, escapeHtml } from "@/lib/emailTemplate";
 import { getEnquiry, markEnquiryReplied } from "@/lib/enquiryStore";
 import { SITE, FORMS } from "@/config/site";
 
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const html = buildEmailHtml({
       title: `Re: your ${enquiry.type} enquiry`,
       intro: `Hi ${enquiry.name || "there"},`,
-      rows: [{ label: "Reply", html: body.message.replace(/\n/g, "<br>") }],
+      rows: [{ label: "Reply", html: escapeHtml(body.message).replace(/\n/g, "<br>") }],
       secondaryCta: {
         label: "Contact Us",
         url: `mailto:${FORMS.contactEmail}?subject=${encodeURIComponent(`Re: your ${enquiry.type} enquiry`)}`,

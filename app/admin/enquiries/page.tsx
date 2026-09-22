@@ -97,7 +97,7 @@ function EnquiriesList({ passcode }: { passcode: string }) {
             <div
               key={e.id}
               className="p-4 bg-[#141414] border border-[#991B1B]/40 rounded-2xl flex flex-wrap items-start gap-4 cursor-pointer hover:border-red-500/60 transition-colors"
-              onClick={() => router.push(`/admin/reply-enquiry/?id=${encodeURIComponent(e.id)}`)}
+              onClick={() => router.push(`/admin/enquiries/${encodeURIComponent(e.id)}`)}
             >
               <div className="flex-1 min-w-[200px]">
                 <div className="flex items-center gap-2">

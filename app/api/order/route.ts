@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
         { label: "Amount Due", value: `$${order.amountDue.toFixed(2)} AUD`, highlight: true },
       ],
       cta: saved
-        ? { label: "Reply in Dashboard →", url: abs(`/admin/send-payment-email/?id=${encodeURIComponent(order.orderNumber)}`) }
+        ? { label: "Reply in Dashboard →", url: abs(`/admin/orders/${encodeURIComponent(order.orderNumber)}`) }
         : undefined,
       footer: `${SITE.name} order notification — ${SITE.domain}`,
     });
