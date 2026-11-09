@@ -1,4 +1,5 @@
 import React from 'react';
+import { withOpenGraph } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import { CATEGORIES, PRODUCTS, SITE, PAGE_SEO, metaDesc, faqHeading } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
@@ -41,7 +42,7 @@ export async function generateMetadata({
   const isPetFood = categorySlug === 'pet-food';
   const seo = PAGE_SEO[`/${category.slug}/${subSlug}/`];
 
-  return {
+  return withOpenGraph({
     title: seo?.title
       ? { absolute: seo.title }
       : isSeafood
@@ -63,7 +64,7 @@ export async function generateMetadata({
     other: {
       'og:updated_time': new Date().toISOString(),
     },
-  };
+  }, `/${category.slug}/${subSlug}/`);
 }
 
 export default async function TopLevelSubcategoryPage({

@@ -1,11 +1,13 @@
 import React from 'react';
+import { withOpenGraph } from '@/lib/seo';
+import type { Metadata } from 'next';
 import { SITE, BRAND, CONTACT } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
 import { SmartImage } from '@/components/SmartImage';
 import { ShieldCheck, MapPin, Truck, Award, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
-export const metadata = {
+export const metadata: Metadata = withOpenGraph({
   title: 'About Our Sydney Craft Butcher Workshop',
   description: 'Mr Meat & Co — an Alexandria, Sydney craft butcher since 2018. 100% Australian grass-fed beef, whole-carcass butchery, cold-chain across NSW and nationwide.',
   alternates: {
@@ -14,7 +16,7 @@ export const metadata = {
   other: {
     'og:updated_time': new Date().toISOString(),
   },
-};
+}, '/about/');
 
 export default function AboutPage() {
   const aboutSchema = {

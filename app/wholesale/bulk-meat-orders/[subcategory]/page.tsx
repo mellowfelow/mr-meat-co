@@ -1,4 +1,5 @@
 import React from 'react';
+import { withOpenGraph } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { PRODUCTS, WHOLESALE_BULK_SUBCATEGORIES, SITE, PAGE_SEO, metaDesc, faqHeading } from '@/config/site';
@@ -30,7 +31,7 @@ export async function generateMetadata({
 
   const seo = PAGE_SEO[`/wholesale/bulk-meat-orders/${subcategory.slug}/`];
 
-  return {
+  return withOpenGraph({
     title: seo?.title
       ? { absolute: seo.title }
       : `${subcategory.name} - Bulk Meat Orders & Animal Shares | ${SITE.name}`,
@@ -41,7 +42,7 @@ export async function generateMetadata({
     alternates: {
       canonical: `https://${SITE.domain}/wholesale/bulk-meat-orders/${subcategory.slug}/`,
     },
-  };
+  }, `/wholesale/bulk-meat-orders/${subcategory.slug}/`);
 }
 
 export default async function BulkSubcategoryPage({

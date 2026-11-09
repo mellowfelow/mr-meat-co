@@ -1,4 +1,6 @@
 import React from 'react';
+import { withOpenGraph } from '@/lib/seo';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Beef, ArrowRight } from 'lucide-react';
 import { SITE, PAGE_SEO, metaDesc, faqHeading } from '@/config/site';
@@ -9,7 +11,7 @@ import { ShopFilterClient } from '@/components/ShopFilterClient';
 
 const shopSeo = PAGE_SEO['/shop/'];
 
-export const metadata = {
+export const metadata: Metadata = withOpenGraph({
   title: shopSeo?.title
     ? { absolute: shopSeo.title }
     : 'Shop All Fresh Beef, Lamb, Poultry & Butcher Boxes',
@@ -23,7 +25,7 @@ export const metadata = {
   other: {
     'og:updated_time': new Date().toISOString(),
   },
-};
+}, '/shop/');
 
 export default function ShopIndexPage() {
   const breadcrumbSchema = {

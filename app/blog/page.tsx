@@ -1,10 +1,12 @@
 import React from 'react';
+import { withOpenGraph } from '@/lib/seo';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { POSTS, SITE } from '@/config/site';
 import { SmartImage } from '@/components/SmartImage';
 import { JsonLd } from '@/components/JsonLd';
 
-export const metadata = {
+export const metadata: Metadata = withOpenGraph({
   title: 'Butchery Masterclass & Cooking Guides Sydney',
   description: 'Master butchery tips, fat ratios for beef mince, dry-aging techniques, and cold-chain storage from Sydney master butchers.',
   alternates: {
@@ -13,7 +15,7 @@ export const metadata = {
   other: {
     'og:updated_time': new Date().toISOString(),
   },
-};
+}, '/blog/');
 
 export default function BlogIndexPage() {
   const breadcrumbSchema = {

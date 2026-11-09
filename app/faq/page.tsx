@@ -1,10 +1,12 @@
 import React from 'react';
+import { withOpenGraph } from '@/lib/seo';
+import type { Metadata } from 'next';
 import { FAQ, FAQ_GROUPS, SITE } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
 import { HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 
-export const metadata = {
+export const metadata: Metadata = withOpenGraph({
   title: 'FAQ | Delivery, Payment, Cuts & Bulk Orders',
   description:
     'Answers on cold-chain meat delivery across NSW and nationwide, the $300 minimum, the crypto-only 10% discount, grass-fed provenance, cuts and bulk shares.',
@@ -14,7 +16,7 @@ export const metadata = {
   other: {
     'og:updated_time': new Date().toISOString(),
   },
-};
+}, '/faq/');
 
 export default function FAQPage() {
   // Combine the homepage FAQ set with every themed group for one FAQPage block.

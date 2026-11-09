@@ -328,7 +328,7 @@ export const CATEGORIES: Category[] = [
     name: "Live Poultry",
     description: "Live birds for backyard flocks — point-of-lay hens, young pullets, dual-purpose and meat birds, and bantams. Farm pickup or local Sydney delivery only.",
     subcategories: ["Laying Hens", "Pullets", "Meat Birds", "Bantams"],
-    image: "/images/categories/live-poultry.webp",
+    image: "/images/point-of-lay-hens-brown-egg.webp",
   },
 ];
 
@@ -7467,7 +7467,7 @@ export const PRODUCTS: Product[] = [
       storageType: "Fresh Chilled",
       animal_protein: "Chicken",
       approximate_weight: "2kg",
-      seo_title: "Bulk Chicken Breast Fillets (2kg) | Bulk Chicken Orders",
+      seo_title: "Bulk Trimmed Chicken Breast Fillets (2kg) | Bulk Chicken Orders",
       seo_meta_description: "Bulk Chicken Breast Fillets (2kg) for $29.98 AUD fixed pack price. Fresh chilled trimmed chicken breasts.",
       breadcrumb_path: "Home > Wholesale > Bulk Meat Orders > Bulk Chicken > Bulk Chicken Breast Fillets"
     }
@@ -9010,7 +9010,7 @@ Work out your total kilos, then decide: a [meat box](/meat-boxes/) if you want i
     date: "2026-08-12",
     updated: "2026-09-02",
     readTime: "7 min read",
-    image: "/images/whole-beef-share.webp",
+    image: "/images/whole-beef-share-200kg.webp",
     primaryKeyword: "quarter beef share",
     seoTitle: "Quarter Beef Share: Weights, Cuts & Freezer Space",
     metaDescription: "A quarter beef share explained — what you actually get, how much freezer space you need, the real per-kilo saving, and how the cut sheet works.",

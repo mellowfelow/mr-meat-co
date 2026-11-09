@@ -1,7 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { PRODUCTS, WHOLESALE_BULK_SUBCATEGORIES, SITE, abs } from '@/config/site';
+import { PRODUCTS, WHOLESALE_BULK_SUBCATEGORIES, SITE, abs, metaDesc, productTitle } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
 import { SmartImage } from '@/components/SmartImage';
 import { ProductAddToCartForm } from '@/app/shop/[category]/[slug]/ProductAddToCartForm';
@@ -41,15 +41,24 @@ export async function generateMetadata({
   const product = PRODUCTS.find((p) => p.slug === slug);
   if (!product) return {};
 
+  const canonical = `https://${SITE.domain}/wholesale/bulk-meat-orders/${subSlug}/${product.slug}/`;
+  // Variants share a product name (e.g. "Whole Beef Share" 200kg / 250kg), so
+  // use the per-product seo_title (carries the size) like the /shop/ products do.
+  const fullTitle = productTitle(product.seo_title, product.product_name || product.name);
+  const shortTitle = productTitle(String(product.seo_title || '').split(' | ')[0], product.product_name || product.name);
+  const title = fullTitle.length > 65 && shortTitle.length <= 65 ? shortTitle : fullTitle;
+  const description = metaDesc(product.seo_meta_description || product.short_description || product.description);
+
   return {
-    title: `${product.product_name || product.name} - Bulk Meat Orders | ${SITE.name}`,
-    description: (product.short_description || product.description || '').slice(0, 155),
+    title: { absolute: title },
+    description,
     alternates: {
-      canonical: `https://${SITE.domain}/wholesale/bulk-meat-orders/${subSlug}/${product.slug}/`,
+      canonical,
     },
     openGraph: {
-      title: `${product.product_name || product.name} | ${SITE.name}`,
-      description: product.short_description || product.shortDescription,
+      title,
+      description,
+      url: canonical,
       images: [{ url: product.main_image || product.image }],
     },
   };
@@ -70,6 +79,12 @@ export default async function BulkProductDetailPage({
   const subcategory = WHOLESALE_BULK_SUBCATEGORIES.find(
     (s) => s.slug === subSlug || s.name.toLowerCase() === (product.subcategory || '').toLowerCase()
   );
+
+  // Variants of one product (e.g. 200kg / 250kg shares) share a name, so the H1 adds the pack size to keep each page's heading unique.
+  const sharesName =
+    PRODUCTS.filter(
+      (p) => (p.product_name || p.name) === (product.product_name || product.name) && (p.is_wholesale || (p.main_category || p.category || '').toLowerCase() === 'wholesale')
+    ).length > 1;
 
   const relatedProducts = PRODUCTS.filter(
     (p) =>
@@ -258,7 +273,9 @@ export default async function BulkProductDetailPage({
 
             {/* Product Name (Field 1: SEPARATE) */}
             <h1 className="text-2xl sm:text-4xl font-black text-white font-serif leading-tight">
-              {product.product_name || product.name}
+              {sharesName && product.pack_size
+                ? `${product.product_name || product.name} (${product.pack_size})`
+                : product.product_name || product.name}
             </h1>
 
             {/* Price & Pack Size & Price Unit (Fields 2, 3, 4: SEPARATE) */}
