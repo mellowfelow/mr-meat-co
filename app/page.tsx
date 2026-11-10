@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { SITE, CATEGORIES, PRODUCTS, POSTS, FAQ, BRAND, CONTACT, SHOP, PAGE_SEO, metaDesc, abs } from '@/config/site';
+import { withOpenGraph } from '@/lib/seo';
 import { ProductCard } from '@/components/ProductCard';
 import { JsonLd } from '@/components/JsonLd';
 import { SmartImage } from '@/components/SmartImage';
@@ -12,16 +13,11 @@ import { Truck, ShieldCheck, Percent, Utensils, MessageSquare, ArrowRight, Award
 export function generateMetadata(): Metadata {
   const seo = PAGE_SEO['/'];
   if (!seo) return {};
-  return {
+  return withOpenGraph({
     title: { absolute: seo.title },
     description: metaDesc(seo.description),
     alternates: { canonical: `https://${SITE.domain}/` },
-    openGraph: {
-      title: seo.title,
-      description: metaDesc(seo.description),
-      images: [{ url: abs(SITE.ogImage), width: 1200, height: 630 }],
-    },
-  };
+  }, '/');
 }
 
 export default function HomePage() {

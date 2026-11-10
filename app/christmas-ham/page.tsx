@@ -1,7 +1,8 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { PRODUCTS, SITE, PAGE_SEO, metaDesc, abs, faqHeading } from '@/config/site';
+import { PRODUCTS, SITE, PAGE_SEO, metaDesc, abs, faqHeading, CONTENT_UPDATED } from '@/config/site';
+import { withOpenGraph } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 import { SeoFaqSection } from '@/components/SeoFaqSection';
 import { GuideSection } from '@/components/GuideSection';
@@ -12,17 +13,12 @@ import { ProductCard } from '@/components/ProductCard';
 const seo = PAGE_SEO['/christmas-ham/'];
 
 export const metadata: Metadata = seo
-  ? {
+  ? withOpenGraph({
       title: { absolute: seo.title },
       description: metaDesc(seo.description),
       alternates: { canonical: `https://${SITE.domain}/christmas-ham/` },
-      openGraph: {
-        title: seo.title,
-        description: metaDesc(seo.description),
-        images: [{ url: abs(SITE.ogImage), width: 1200, height: 630 }],
-      },
-      other: { 'og:updated_time': new Date().toISOString() },
-    }
+      other: { 'og:updated_time': CONTENT_UPDATED },
+    }, '/christmas-ham/')
   : {};
 
 const HAM_SLUGS = ['whole-bone-in-christmas-ham', 'half-leg-christmas-ham', 'boneless-christmas-ham'];

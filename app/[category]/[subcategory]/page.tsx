@@ -1,7 +1,7 @@
 import React from 'react';
 import { withOpenGraph } from '@/lib/seo';
 import { notFound } from 'next/navigation';
-import { CATEGORIES, PRODUCTS, SITE, PAGE_SEO, metaDesc, faqHeading } from '@/config/site';
+import { CATEGORIES, PRODUCTS, SITE, PAGE_SEO, metaDesc, faqHeading, productTitle, CONTENT_UPDATED } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
 import { SeoFaqSection } from '@/components/SeoFaqSection';
 import { GuideSection } from '@/components/GuideSection';
@@ -43,17 +43,16 @@ export async function generateMetadata({
   const seo = PAGE_SEO[`/${category.slug}/${subSlug}/`];
 
   return withOpenGraph({
-    title: seo?.title
-      ? { absolute: seo.title }
-      : isSeafood
-      ? `${subcategory} — Seafood`
-      : isPetFood
-      ? `${subcategory} — Pet Food`
-      : `${subcategory} — ${category.name}`,
+    title: {
+      absolute: productTitle(
+        seo?.title,
+        isSeafood ? `Buy ${subcategory} Online` : isPetFood ? `${subcategory} Pet Food` : `${category.name} ${subcategory} Range`
+      ),
+    },
     description: metaDesc(
       seo?.description ??
         (isSeafood
-          ? `Browse our ${subcategory.toLowerCase()} seafood catalogue — fresh chilled and frozen, with market-reference starting prices in AUD.`
+          ? `Browse our ${subcategory.toLowerCase()} range — fresh chilled and frozen seafood with market-reference starting prices in AUD.`
           : isPetFood
           ? `Our ${subcategory.toLowerCase()} pet food catalogue. Pet food only — not for human consumption.`
           : `Shop fresh Australian ${subcategory.toLowerCase()} cuts from our ${category.name} selection. Cold-chain delivery across NSW, frozen courier nationwide.`)
@@ -62,7 +61,7 @@ export async function generateMetadata({
       canonical: `https://${SITE.domain}/${category.slug}/${subSlug}/`,
     },
     other: {
-      'og:updated_time': new Date().toISOString(),
+      'og:updated_time': CONTENT_UPDATED,
     },
   }, `/${category.slug}/${subSlug}/`);
 }

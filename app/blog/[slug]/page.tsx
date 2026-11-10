@@ -1,6 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { POSTS, SITE, abs } from '@/config/site';
+import { POSTS, SITE, abs, fitTitle, metaDesc } from '@/config/site';
+import { withOpenGraph } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 import { SmartImage } from '@/components/SmartImage';
 import { Article } from '@/components/Article';
@@ -20,20 +21,18 @@ export async function generateMetadata({
   const post = POSTS.find((p) => p.slug === slug);
   if (!post) return {};
 
-  return {
-    // plain string → the layout template adds " | Mr Meat & Co" exactly once
-    title: post.seoTitle || post.title,
-    description: (post.metaDescription || post.excerpt || '').slice(0, 155),
+  return withOpenGraph({
+    // fitted to <=60 chars with the brand suffix when it fits
+    title: { absolute: fitTitle(post.seoTitle || post.title) },
+    description: metaDesc(post.metaDescription || post.excerpt || ''),
     alternates: {
       canonical: `https://${SITE.domain}/blog/${post.slug}/`,
     },
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
       images: [{ url: abs(post.image) }],
       type: 'article',
     },
-  };
+  });
 }
 
 export default async function BlogArticlePage({
@@ -47,6 +46,18 @@ export default async function BlogArticlePage({
   if (!post) {
     notFound();
   }
+
+  const words = (t: string) => new Set(t.toLowerCase().match(/[a-z]{4,}/g) || []);
+  const mine = words(`${post.title} ${post.primaryKeyword || ''}`);
+  const related = POSTS.filter((p) => p.slug !== post.slug)
+    .map((p) => {
+      let score = p.category === post.category ? 2 : 0;
+      for (const w of words(`${p.title} ${p.primaryKeyword || ''}`)) if (mine.has(w)) score++;
+      return { p, score };
+    })
+    .sort((a, b) => b.score - a.score || (b.p.date > a.p.date ? 1 : -1))
+    .slice(0, 3)
+    .map((x) => x.p);
 
   const articleSchema = {
     '@context': 'https://schema.org',
@@ -171,6 +182,26 @@ export default async function BlogArticlePage({
             ))}
           </div>
         </div>
+      )}
+
+      {/* Related guides — internal links between posts (each guide was previously linked only from /blog/) */}
+      {related.length > 0 && (
+        <nav aria-label="Related guides" className="bg-[#141414] p-6 sm:p-10 rounded-3xl border border-[#991B1B]/40 space-y-4">
+          <h2 className="text-2xl font-black text-white font-serif">Related guides</h2>
+          <ul className="grid gap-3 sm:grid-cols-3">
+            {related.map((r) => (
+              <li key={r.slug}>
+                <Link
+                  href={`/blog/${r.slug}/`}
+                  className="block h-full rounded-2xl border border-[#991B1B]/30 bg-[#1A1A1A] p-4 hover:border-red-600 transition-colors"
+                >
+                  <span className="block text-[11px] font-bold uppercase tracking-wide text-red-400">{r.category}</span>
+                  <span className="mt-1 block text-sm font-bold text-white leading-snug">{r.title}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       )}
 
       {/* Bottom CTA Box */}

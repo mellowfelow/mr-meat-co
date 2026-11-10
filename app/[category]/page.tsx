@@ -1,7 +1,7 @@
 import React from 'react';
 import { withOpenGraph } from '@/lib/seo';
 import { notFound } from 'next/navigation';
-import { CATEGORIES, PRODUCTS, SITE, PAGE_SEO, metaDesc, faqHeading } from '@/config/site';
+import { CATEGORIES, PRODUCTS, SITE, PAGE_SEO, metaDesc, faqHeading, productTitle, CONTENT_UPDATED } from '@/config/site';
 import { GuideSection } from '@/components/GuideSection';
 import { SourcingNote } from '@/components/SourcingNote';
 import { SmartImage } from '@/components/SmartImage';
@@ -31,13 +31,16 @@ export async function generateMetadata({
   const seo = PAGE_SEO[`/${category.slug}/`];
 
   return withOpenGraph({
-    title: seo?.title
-      ? { absolute: seo.title }
-      : isSeafood
-      ? `Seafood Catalogue | Fish, Prawns & Salmon`
-      : isPetFood
-      ? `Pet Food Catalogue | Raw Pet Mince, Bones & Offal`
-      : `${category.name} Cuts & Products | Mr Meat & Co Australia`,
+    title: {
+      absolute: productTitle(
+        seo?.title,
+        isSeafood
+          ? 'Seafood Catalogue | Fish, Prawns & Salmon'
+          : isPetFood
+          ? 'Pet Food Catalogue | Raw Pet Mince, Bones & Offal'
+          : `${category.name} Cuts & Products | Sydney Delivery`
+      ),
+    },
     description: metaDesc(
       seo?.description ??
         (isSeafood
@@ -50,7 +53,7 @@ export async function generateMetadata({
       canonical: `https://${SITE.domain}/${category.slug}/`,
     },
     other: {
-      'og:updated_time': new Date().toISOString(),
+      'og:updated_time': CONTENT_UPDATED,
     },
   }, `/${category.slug}/`);
 }

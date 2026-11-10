@@ -2,6 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { PRODUCTS, WHOLESALE_BULK_SUBCATEGORIES, SITE, abs, metaDesc, productTitle } from '@/config/site';
+import { withOpenGraph } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 import { SmartImage } from '@/components/SmartImage';
 import { ProductAddToCartForm } from '@/app/shop/[category]/[slug]/ProductAddToCartForm';
@@ -44,24 +45,17 @@ export async function generateMetadata({
   const canonical = `https://${SITE.domain}/wholesale/bulk-meat-orders/${subSlug}/${product.slug}/`;
   // Variants share a product name (e.g. "Whole Beef Share" 200kg / 250kg), so
   // use the per-product seo_title (carries the size) like the /shop/ products do.
-  const fullTitle = productTitle(product.seo_title, product.product_name || product.name);
-  const shortTitle = productTitle(String(product.seo_title || '').split(' | ')[0], product.product_name || product.name);
-  const title = fullTitle.length > 65 && shortTitle.length <= 65 ? shortTitle : fullTitle;
+  const title = productTitle(product.seo_title, product.product_name || product.name);
   const description = metaDesc(product.seo_meta_description || product.short_description || product.description);
 
-  return {
+  return withOpenGraph({
     title: { absolute: title },
     description,
     alternates: {
       canonical,
     },
-    openGraph: {
-      title,
-      description,
-      url: canonical,
-      images: [{ url: product.main_image || product.image }],
-    },
-  };
+    openGraph: { images: [{ url: product.main_image || product.image }] },
+  });
 }
 
 export default async function BulkProductDetailPage({

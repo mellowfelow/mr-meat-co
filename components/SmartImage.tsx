@@ -76,12 +76,13 @@ export function SmartImage({
   };
 
   const isGoogleDrive = Boolean(extractGoogleDriveId(src) || (imgSrc && (imgSrc.includes('googleusercontent.com') || imgSrc.includes('drive.google.com'))));
-  // Our own /images/* files are already sized + webp-compressed by
-  // scripts/images.mjs, so skip Vercel's on-demand optimizer entirely — the
-  // file is served straight from the CDN with zero transform latency.
-  const isLocalOptimised = typeof imgSrc === 'string' && imgSrc.startsWith('/images/');
+  // Local /images/* files (1600x1200 webp masters) go through the Next image
+  // optimizer so phones get right-sized AVIF/WebP via srcset instead of the full
+  // master — this was the main LCP + "improve image delivery" cost. Only Google
+  // Drive / external URLs and SVGs bypass it.
+  const isSvg = typeof imgSrc === 'string' && /\.svg(\?|$)/i.test(imgSrc);
   const shouldUnoptimize =
-    unoptimized !== undefined ? unoptimized : isGoogleDrive || isLocalOptimised;
+    unoptimized !== undefined ? unoptimized : isGoogleDrive || isSvg;
 
   if (fill) {
     return (

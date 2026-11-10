@@ -1,7 +1,8 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import { CATEGORIES, SITE } from '@/config/site';
+import { CATEGORIES, SITE, metaDesc } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
+import { withOpenGraph } from '@/lib/seo';
 import { ShopFilterClient } from '@/components/ShopFilterClient';
 import Link from 'next/link';
 
@@ -18,15 +19,15 @@ export async function generateMetadata({
   const category = CATEGORIES.find((c) => c.slug === categorySlug);
   if (!category) return {};
 
-  return {
+  return withOpenGraph({
     title: `${category.name} — Grass-Fed Butcher Sydney`,
-    description: category.description,
+    description: metaDesc(category.description),
     // The /{slug}/ page is the canonical category page (nav + PAGE_SEO target).
     // This /shop/{slug}/ filter view points at it to avoid duplicate content.
     alternates: {
       canonical: `https://${SITE.domain}/${category.slug}/`,
     },
-  };
+  });
 }
 
 export default async function CategoryPage({

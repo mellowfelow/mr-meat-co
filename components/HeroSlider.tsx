@@ -52,6 +52,13 @@ const HERO_SLIDES = [
 
 export function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  // Slides 2-4 are only mounted once the first paint is done, so their images
+  // don't compete with slide 1 (the LCP element) for bandwidth.
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setArmed(true), 3500);
+    return () => clearTimeout(t);
+  }, []);
   const customHeroImages = useCustomStoreImages('tmc_gdrive_hero_images');
 
   useEffect(() => {
@@ -81,6 +88,7 @@ export function HeroSlider() {
     <section className="relative bg-[#0D0D0D] text-white overflow-hidden border-b border-red-900/40 min-h-[580px] lg:min-h-[640px] flex items-center">
       {/* Background Image Carousel with Scrim Overlay */}
       {HERO_SLIDES.map((slide, idx) => {
+        if (idx !== 0 && !armed && idx !== currentSlide) return null;
         const slideImage = getSlideImage(slide.id, slide.image);
         return (
           <div
@@ -94,7 +102,7 @@ export function HeroSlider() {
               alt={slide.title}
               fill
               priority={idx === 0}
-              sizes="100vw"
+              sizes="(max-width: 768px) 100vw, 1280px"
               className="object-cover object-center scale-105 transition-transform duration-10000"
             />
             {/* Multi-stage dark gradient scrim for readability */}
@@ -182,10 +190,14 @@ export function HeroSlider() {
               type="button"
               onClick={() => setCurrentSlide(i)}
               aria-label={`Go to slide ${i + 1}`}
-              className={`h-2.5 rounded-full transition-all ${
-                i === currentSlide ? 'w-8 bg-red-600' : 'w-2.5 bg-white/40 hover:bg-white/80'
-              }`}
-            />
+              className="group flex h-6 items-center justify-center px-1"
+            >
+              <span
+                className={`block h-2.5 rounded-full transition-all ${
+                  i === currentSlide ? 'w-8 bg-red-600' : 'w-2.5 bg-white/40 group-hover:bg-white/80'
+                }`}
+              />
+            </button>
           ))}
         </div>
         <button

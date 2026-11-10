@@ -1,7 +1,7 @@
 import React from 'react';
 import { withOpenGraph } from '@/lib/seo';
 import type { Metadata } from 'next';
-import { FAQ, FAQ_GROUPS, SITE } from '@/config/site';
+import { FAQ, FAQ_GROUPS, SITE, CONTENT_UPDATED } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
 import { HelpCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -14,7 +14,7 @@ export const metadata: Metadata = withOpenGraph({
     canonical: `https://${SITE.domain}/faq/`,
   },
   other: {
-    'og:updated_time': new Date().toISOString(),
+    'og:updated_time': CONTENT_UPDATED,
   },
 }, '/faq/');
 

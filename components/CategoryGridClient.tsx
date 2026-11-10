@@ -81,7 +81,8 @@ export function CategoryGridClient() {
                       <Link
                         key={sub}
                         href={`/${cat.slug}/${subSlug}/`}
-                        className="px-2.5 py-1 bg-[#222] hover:bg-red-700 hover:text-white text-gray-300 rounded-md text-[11px] font-medium transition-colors border border-white/10"
+                        aria-label={`${sub} ${cat.name}`}
+                        className="px-2.5 py-1.5 bg-[#222] hover:bg-red-700 hover:text-white text-gray-300 rounded-md text-[11px] font-medium transition-colors border border-white/10"
                       >
                         {sub}
                       </Link>

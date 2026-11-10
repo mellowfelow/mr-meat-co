@@ -40,9 +40,7 @@ export function Footer() {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-red-400 shrink-0" />
-                <span>
-                  orders&#64;mrmeatandco.com.au
-                </span>
+                <span dangerouslySetInnerHTML={{ __html: CONTACT.emailHtml }} />
               </div>
             </div>
           </div>
@@ -137,7 +135,7 @@ export function Footer() {
         <div className="pt-8 border-t border-[#991B1B]/30 flex flex-col md:flex-row items-center justify-between text-xs text-gray-400 space-y-4 md:space-y-0">
           <div>
             © {new Date().getFullYear()} {SITE.legalName}. All rights reserved. Sydney, Australia.
-            <span className="block md:inline md:ml-1 text-gray-500">ABN {SITE.abn}</span>
+            <span className="block md:inline md:ml-1 text-gray-400">ABN {SITE.abn}</span>
           </div>
           <div className="text-gray-300 font-medium">
             100% Australian Grass-Fed & Hormone-Free Meat Selection

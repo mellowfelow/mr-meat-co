@@ -1,6 +1,7 @@
 import React from 'react';
+import { withOpenGraph } from '@/lib/seo';
 import { notFound } from 'next/navigation';
-import { PRODUCTS, CATEGORIES, SITE, SHOP, CONTACT, abs, productTitle, metaDesc } from '@/config/site';
+import { PRODUCTS, CATEGORIES, SITE, SHOP, CONTACT, abs, productTitle, metaDesc, CONTENT_UPDATED } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
 import { SmartImage } from '@/components/SmartImage';
 import { ProductAddToCartForm } from './ProductAddToCartForm';
@@ -44,7 +45,7 @@ export async function generateMetadata({
     main_image?: string; image?: string;
   };
 
-  return {
+  return withOpenGraph({
     title: { absolute: productTitle(p.SEO_title || p.seo_title, p.product_name || p.name) },
     description: metaDesc(
       p.SEO_meta_description || p.seo_meta_description || p.full_description || p.description
@@ -52,15 +53,11 @@ export async function generateMetadata({
     alternates: {
       canonical,
     },
-    openGraph: {
-      title: `${p.product_name || p.name} | ${SITE.name}`,
-      description: p.short_description || p.shortDescription || p.description.slice(0, 155),
-      images: [{ url: p.main_image || p.image || abs(SITE.ogImage) }],
-    },
+    openGraph: { images: [{ url: p.main_image || p.image || abs(SITE.ogImage) }] },
     other: {
-      'og:updated_time': new Date().toISOString(),
+      'og:updated_time': CONTENT_UPDATED,
     },
-  };
+  });
 }
 
 export default async function ProductDetailPage({

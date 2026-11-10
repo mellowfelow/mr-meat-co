@@ -1,27 +1,19 @@
 import type { Metadata } from 'next';
 import { SITE, PAGE_SEO, abs, metaDesc } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
+import { withOpenGraph } from '@/lib/seo';
 import { WholesaleClient } from './WholesaleClient';
 
 const seo = PAGE_SEO['/wholesale/'];
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOpenGraph({
   title: seo ? { absolute: seo.title } : 'Wholesale & Bulk Meat | Restaurant & Trade Supply',
   description: metaDesc(
     seo?.description ??
       'Wholesale and bulk meat from an Australian craft butcher — bulk cartons, quarter/half/whole animal shares, custom cut sheets and standing restaurant supply. NSW cold-chain, national frozen freight.'
   ),
   alternates: { canonical: `https://${SITE.domain}/wholesale/` },
-  openGraph: {
-    title: seo?.title ?? 'Wholesale & Bulk Meat Supply — Mr Meat & Co',
-    description: metaDesc(
-      seo?.description ??
-        'Bulk cartons, carcass shares, custom cut sheets and standing restaurant supply. NSW cold-chain, national frozen freight.'
-    ),
-    url: `https://${SITE.domain}/wholesale/`,
-    images: [{ url: abs(SITE.ogImage) }],
-  },
-};
+});
 
 const wholesaleSchema = {
   '@context': 'https://schema.org',

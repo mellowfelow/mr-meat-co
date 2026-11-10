@@ -100,7 +100,7 @@ export function ChatHub() {
                 </div>
                 <div>
                   <div className="text-xs font-bold text-white">Email Inquiry</div>
-                  <div className="text-[11px] text-gray-400">orders&#64;mrmeatandco.com.au</div>
+                  <div className="text-[11px] text-gray-400" dangerouslySetInnerHTML={{ __html: CONTACT.emailHtml }} />
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />

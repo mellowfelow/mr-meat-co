@@ -1,7 +1,7 @@
 import React from 'react';
 import { withOpenGraph } from '@/lib/seo';
 import type { Metadata } from 'next';
-import { SITE, BRAND, CONTACT } from '@/config/site';
+import { SITE, BRAND, CONTACT, CONTENT_UPDATED } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
 import { SmartImage } from '@/components/SmartImage';
 import { ShieldCheck, MapPin, Truck, Award, CheckCircle2 } from 'lucide-react';
@@ -14,7 +14,7 @@ export const metadata: Metadata = withOpenGraph({
     canonical: `https://${SITE.domain}/about/`,
   },
   other: {
-    'og:updated_time': new Date().toISOString(),
+    'og:updated_time': CONTENT_UPDATED,
   },
 }, '/about/');
 

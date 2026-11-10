@@ -1,20 +1,15 @@
 import type { Metadata } from 'next';
 import { SITE, CONTACT, abs, metaDesc } from '@/config/site';
+import { withOpenGraph } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOpenGraph({
   title: { absolute: 'Contact Mr Meat & Co — Alexandria Sydney Butcher' },
   description: metaDesc(
     'Contact the Mr Meat & Co butchery in Alexandria, Sydney — phone, WhatsApp and email for orders, custom cuts, delivery routes and wholesale enquiries. Open Mon–Sat.'
   ),
   alternates: { canonical: `https://${SITE.domain}/contact/` },
-  openGraph: {
-    title: 'Contact Mr Meat & Co — Alexandria Sydney Butcher',
-    description: 'Phone, WhatsApp and email for orders, custom cuts and delivery — the Alexandria, Sydney butchery.',
-    url: `https://${SITE.domain}/contact/`,
-    images: [{ url: abs(SITE.ogImage) }],
-  },
-};
+});
 
 const contactSchema = {
   '@context': 'https://schema.org',

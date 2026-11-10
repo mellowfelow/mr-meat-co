@@ -3,7 +3,7 @@ import { withOpenGraph } from '@/lib/seo';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Beef, ArrowRight } from 'lucide-react';
-import { SITE, PAGE_SEO, metaDesc, faqHeading } from '@/config/site';
+import { SITE, PAGE_SEO, metaDesc, faqHeading, CONTENT_UPDATED } from '@/config/site';
 import { SourcingNote } from '@/components/SourcingNote';
 import { JsonLd } from '@/components/JsonLd';
 import { SeoFaqSection } from '@/components/SeoFaqSection';
@@ -23,7 +23,7 @@ export const metadata: Metadata = withOpenGraph({
     canonical: `https://${SITE.domain}/shop/`,
   },
   other: {
-    'og:updated_time': new Date().toISOString(),
+    'og:updated_time': CONTENT_UPDATED,
   },
 }, '/shop/');
 

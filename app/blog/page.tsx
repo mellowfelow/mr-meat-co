@@ -2,7 +2,7 @@ import React from 'react';
 import { withOpenGraph } from '@/lib/seo';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { POSTS, SITE } from '@/config/site';
+import { POSTS, SITE, CONTENT_UPDATED } from '@/config/site';
 import { SmartImage } from '@/components/SmartImage';
 import { JsonLd } from '@/components/JsonLd';
 
@@ -13,7 +13,7 @@ export const metadata: Metadata = withOpenGraph({
     canonical: `https://${SITE.domain}/blog/`,
   },
   other: {
-    'og:updated_time': new Date().toISOString(),
+    'og:updated_time': CONTENT_UPDATED,
   },
 }, '/blog/');
 

@@ -1,6 +1,7 @@
 import React from 'react';
+import { withOpenGraph } from '@/lib/seo';
 import { notFound } from 'next/navigation';
-import { PRODUCTS, CATEGORIES, SITE, SHOP, CONTACT, abs, productTitle, metaDesc } from '@/config/site';
+import { PRODUCTS, CATEGORIES, SITE, SHOP, CONTACT, abs, productTitle, metaDesc, CONTENT_UPDATED } from '@/config/site';
 import { JsonLd } from '@/components/JsonLd';
 import { SmartImage } from '@/components/SmartImage';
 import { ProductAddToCartForm } from '@/app/shop/[category]/[slug]/ProductAddToCartForm';
@@ -44,21 +45,17 @@ export async function generateMetadata({
     ? `https://${SITE.domain}/wholesale/bulk-meat-orders/${subSlug}/${product.slug}/`
     : `https://${SITE.domain}/shop/${product.category}/${product.slug}/`;
 
-  return {
+  return withOpenGraph({
     title: { absolute: productTitle(product.SEO_title || product.seo_title, product.product_name || product.name) },
     description: metaDesc(product.SEO_meta_description || product.seo_meta_description || product.full_description || product.description),
     alternates: {
       canonical: canonicalUrl,
     },
-    openGraph: {
-      title: `${product.product_name || product.name} | ${SITE.name}`,
-      description: product.short_description || product.shortDescription,
-      images: [{ url: product.main_image || product.image }],
-    },
+    openGraph: { images: [{ url: product.main_image || product.image }] },
     other: {
-      'og:updated_time': new Date().toISOString(),
+      'og:updated_time': CONTENT_UPDATED,
     },
-  };
+  });
 }
 
 export default async function TopLevelProductDetailPage({

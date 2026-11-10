@@ -154,21 +154,58 @@ export function subcategorySlug(name: string): string {
     .replace(/ /g, "-");
 }
 
+/** Last date real site content changed. Drives sitemap <lastmod> and
+ *  og:updated_time so they stay stable between deploys instead of being stamped
+ *  with every build time (Google discards lastmod it can't trust). Bump this
+ *  only when content genuinely changes. */
+export const CONTENT_UPDATED = "2026-11-10T00:00:00.000Z";
+
+const DESC_SUFFIX = " Cold-chain refrigerated delivery across NSW from our Alexandria, Sydney butchery.";
+const DESC_SUFFIX_SHORT = " Cold-chain delivery across NSW.";
+const BOILERPLATE_DESC = /^(.*?) available from Australian Online Meat Shop\.[^.]*\.?$/i;
+
 /** Clamp a meta description to a search-safe length (~155 chars) at a word
- *  boundary. Descriptions in PAGE_SEO are written long-form; this trims them
- *  for the <meta> tag without touching the on-page copy. */
+ *  boundary, and lengthen thin ones (<120 chars) to a useful ~120-158. Descriptions
+ *  in PAGE_SEO are written long-form; this trims them for the <meta> tag without
+ *  touching the on-page copy. */
 export function metaDesc(s?: string | null, fallback?: string): string {
-  const t = (s || fallback || SITE.tagline).replace(/\s+/g, " ").trim();
+  let t = (s || fallback || SITE.tagline).replace(/\s+/g, " ").trim();
+  const bp = BOILERPLATE_DESC.exec(t);
+  if (bp) {
+    t = `Buy ${bp[1]} online from ${SITE.name}. Dispatched from our Alexandria, Sydney butchery with cold-chain refrigerated delivery across NSW.`;
+  } else if (t.length < 120) {
+    const stem = `${t.replace(/[\s]+$/, "")}${/[.!?]$/.test(t) ? "" : "."}`;
+    if (stem.length + DESC_SUFFIX.length <= 158) t = stem + DESC_SUFFIX;
+    else if (stem.length + DESC_SUFFIX_SHORT.length <= 158) t = stem + DESC_SUFFIX_SHORT;
+  }
   if (t.length <= 158) return t;
   const cut = t.slice(0, 156);
   const at = cut.lastIndexOf(" ");
   return (at > 110 ? cut.slice(0, at) : cut).replace(/[\s,;:.–—-]+$/, "");
 }
 
+const TITLE_MAX = 60;
+
+/** Fit a title to <=60 chars with the brand appended when it fits. Drops trailing
+ *  " | " segments first, then the brand, then truncates at a word boundary. */
+export function fitTitle(raw: string): string {
+  const base = raw.replace(/\s+/g, " ").trim();
+  const segs = base.split(" | ");
+  while (segs.length > 1 && `${segs.join(" | ")} | ${SITE.name}`.length > TITLE_MAX) segs.pop();
+  const withBrand = `${segs.join(" | ")} | ${SITE.name}`;
+  if (withBrand.length <= TITLE_MAX) return withBrand;
+  if (base.length <= TITLE_MAX) return base;
+  const cut = base.slice(0, TITLE_MAX);
+  const at = cut.lastIndexOf(" ");
+  return cut.slice(0, at > 35 ? at : TITLE_MAX).replace(/[\s,;:&|–—-]+$/, "").replace(/\s+(and|or|with|for|to|the|a|in|of)$/i, "");
+}
+
 /**
  * Normalise a product/page title so the brand appears exactly once at the end.
  * Strips a trailing "— Mr Meat & Co" that some source seo_title values already
- * carry, plus generic boilerplate segments, then appends " | Mr Meat & Co".
+ * carry, plus generic boilerplate segments, then fits to 60 chars. A bare product
+ * name (no seo_title) is enriched with a delivery qualifier so it isn't a thin
+ * 15-25 char title.
  * Use with `title: { absolute: productTitle(...) }` to bypass the layout template.
  */
 export function productTitle(raw?: string | null, name?: string | null): string {
@@ -178,7 +215,13 @@ export function productTitle(raw?: string | null, name?: string | null): string 
   base = base.replace(/\s*\|\s*(Sydney Craft Butcher|Pet Food Catalogue|Seafood Catalogue)\b/i, "");
   base = base.replace(/[\s|–—-]+$/, "").trim();
   if (!base) base = (name || SITE.name).trim();
-  return `${base} | ${SITE.name}`;
+  if ((!raw || base.toLowerCase() === (name || "").trim().toLowerCase()) && `${base} | ${SITE.name}`.length < 40) {
+    for (const q of [" Online | Sydney Delivery", " | Sydney Delivery"]) {
+      const cand = `${base}${q} | ${SITE.name}`;
+      if (cand.length <= TITLE_MAX) return cand;
+    }
+  }
+  return fitTitle(base);
 }
 
 export const CONTACT = {

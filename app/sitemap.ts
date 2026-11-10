@@ -7,6 +7,7 @@ import {
   WHOLESALE_BULK_SUBCATEGORIES,
   abs,
   subcategorySlug,
+  CONTENT_UPDATED,
 } from '@/config/site';
 
 const subSlug = subcategorySlug;
@@ -20,7 +21,7 @@ const cleanImage = (src?: string | null): string[] | undefined =>
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = `https://${SITE.domain}`;
-  const now = new Date().toISOString();
+  const now = CONTENT_UPDATED;
 
   // Static core routes (checkout + search are transactional — not indexed)
   const staticRoutes: MetadataRoute.Sitemap = [

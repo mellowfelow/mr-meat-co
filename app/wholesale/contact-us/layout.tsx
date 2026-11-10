@@ -1,20 +1,15 @@
 import type { Metadata } from 'next';
 import { SITE, CONTACT, abs, metaDesc } from '@/config/site';
+import { withOpenGraph } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = withOpenGraph({
   title: { absolute: 'Custom Bulk Meat Order Enquiry | Mr Meat & Co' },
   description: metaDesc(
     'Request a quote for custom bulk meat orders — volumes beyond the listed packs, custom cut sheets, recurring commercial delivery and whole-animal shares across NSW.'
   ),
   alternates: { canonical: `https://${SITE.domain}/wholesale/contact-us/` },
-  openGraph: {
-    title: 'Custom Bulk Meat Order Enquiry — Mr Meat & Co',
-    description: 'Custom cut sheets, large volumes and recurring commercial delivery — request a quote.',
-    url: `https://${SITE.domain}/wholesale/contact-us/`,
-    images: [{ url: abs(SITE.ogImage) }],
-  },
-};
+});
 
 const schema = {
   '@context': 'https://schema.org',

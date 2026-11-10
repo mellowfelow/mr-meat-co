@@ -107,6 +107,16 @@ export function ShopFilterClient({ initialCategory = 'all' }: ShopFilterClientPr
   const [sortBy, setSortBy] = useState<string>('featured');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
+  // Only the first PAGE_SIZE cards are rendered up front (the full 330-card
+  // grid made /shop/ a ~1.5MB document); "Show more" reveals the rest.
+  const PAGE_SIZE = 60;
+  const [visibleCount, setVisibleCount] = useState<number>(PAGE_SIZE);
+  const filterSig = `${selectedCategory}|${selectedSubcategory}|${selectedCutStyle}|${selectedProvenance}|${selectedPriceRange}|${searchQuery}|${sortBy}`;
+  const [prevFilterSig, setPrevFilterSig] = useState<string>(filterSig);
+  if (prevFilterSig !== filterSig) {
+    setPrevFilterSig(filterSig);
+    setVisibleCount(PAGE_SIZE);
+  }
 
   if (prevInitialCategory !== initialCategory) {
     setPrevInitialCategory(initialCategory);
@@ -589,9 +599,20 @@ export function ShopFilterClient({ initialCategory = 'all' }: ShopFilterClientPr
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
+              {filteredProducts.slice(0, visibleCount).map((product) => (
                 <ProductCard key={product.slug} product={product} />
               ))}
+            </div>
+          )}
+          {filteredProducts.length > visibleCount && (
+            <div className="mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
+                className="min-h-[44px] rounded-xl border border-red-800/60 bg-[#1A1A1A] px-8 py-3 text-sm font-bold text-white hover:bg-[#281818]"
+              >
+                Show more products ({filteredProducts.length - visibleCount} remaining)
+              </button>
             </div>
           )}
         </main>
